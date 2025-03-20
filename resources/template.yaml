@@ -1,0 +1,81 @@
+template:
+  name: "Generate JSONL from {input_data}"
+  
+  objective: >
+    Transform {input_data} into a structured {jsonl_file} format suitable for AI model training, evaluation, and benchmarking. 
+    The output will adhere to JSONL standards while preserving data integrity.
+
+  task_description: >
+    This task leverages a Large Language Model ({llm_model}) to process unstructured or semi-structured {input_data} 
+    and convert it into a structured JSONL format. The data includes user interactions, system instructions, and 
+    assistant responses that need to be extracted, formatted, and validated.
+
+    The dataset consists of:
+    - User queries/commands related to {assistant_type} functionality
+    - Corresponding assistant responses or function calls
+    - Optional system instructions or context
+    
+    The transformation process includes:
+    1. Extracting key components from each interaction
+    2. Structuring the extracted data according to {jsonl_file_format}
+    3. Ensuring consistency and compliance with JSONL standards
+
+  processing_specifications:
+    data_extraction:
+      - Pattern recognition: Identify content enclosed within defined tags (e.g., <|user|>, <|assistant|>, <|system|>)
+      - Entity recognition: Extract relevant entities, intents, and user actions
+      - Response mapping: Associate user inputs with the correct assistant responses
+      - Context preservation: Maintain conversation history and dependencies
+      - Fault tolerance: Handle cases of missing, misformatted, or duplicate tags based on {error_handling} setting
+    
+    transformation_rules:
+      - Tag removal: Strip tags while retaining content integrity
+      - JSON formatting: Ensure adherence to {jsonl_file_format}
+      - Special handling: Process edge cases like multi-turn conversations, incomplete queries, or function calls
+      - Error handling: Manage malformed examples, redundant interactions, and unexpected data patterns
+    
+    validation_criteria:
+      - Schema compliance: Validate against the defined JSON schema {jsonl_file_format}
+      - Format integrity: Ensure proper JSON formatting with no syntax errors
+      - Content accuracy: Verify that extracted text matches the original source data exactly
+      - Completeness check: Confirm all valid interactions are processed and included
+      - Duplicate detection: Identify and remove redundant or duplicate entries, if applicable
+      - Uniqueness validation: Ensure each JSON object represents a distinct interaction
+
+  input_specification:
+    format_description: >
+      The input data consists of structured interactions in the following format:
+      {"text": "<|user|>User message<|end|>\n<|assistant|>Assistant response<|end|>"}
+      or
+      {"text": "<|system|>System instructions<|end|>\n<|user|>User message<|end|>\n<|assistant|>Assistant response<|end|>"}
+    
+    tags: "{tags}"  # e.g., ["<|user|>", "<|assistant|>", "<|system|>", "<|end|>"]
+    sample_input: "{input_data}"
+    source_file: "{input_file_path}"
+  
+  output_specification:
+    format_description: >
+      Each line in the output JSONL file will contain a valid JSON object with the following structure:
+    json_schema: "{jsonl_file_format}"  # e.g., {"messages":[{"role":"user","content":"..."},{"role":"assistant","content":"..."}]}
+    example_output: "{example_jsonl}"
+    destination_file: "{output_file_path}"
+
+  execution_parameters:
+    llm_configuration:
+      model: "{llm_model}"
+      temperature: "{temperature}"
+      max_tokens: "{max_tokens}"
+      top_p: "{top_p}"
+    
+    processing_options:
+      batch_size: "{batch_size}"  # Number of examples processed per batch (adjustable)
+      error_handling: "{error_handling}"  # Options: "skip", "log", "halt", or "attempt_fix"
+      validation_level: "{validation_level}"  # Options: "basic" (schema only) or "strict" (schema + content validation)
+
+  success_criteria: >
+    The process is considered successful if:
+    1. All valid interactions from the input are transformed correctly
+    2. The output file contains properly formatted JSON objects, one per line
+    3. The extracted content remains unchanged and accurately structured
+    4. No critical errors, missing data, or formatting inconsistencies are found
+    5. The file is ready for direct use in {assistant_type} model training or evaluation

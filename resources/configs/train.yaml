@@ -1,0 +1,31 @@
+config:
+  assistant_type: "chatbot"
+  input_file_path: "resources/input/corpus.txt"
+  output_file_path: "resources/output/train.jsonl"
+  jsonl_file_format: '{"messages":[{"role":"user","content":"..."},{"role":"assistant","content":"..."}]}'
+  tags: ["<|user|>", "<|assistant|>", "<|system|>", "<|end|>"]
+  
+  llm_model: "gpt-4"
+  temperature: 0.7
+  max_tokens: 2048
+  top_p: 0.9
+
+  processing_options:
+    batch_size: 50
+    error_handling: "log"  # Options: "skip", "log", "halt", "attempt_fix"
+    validation_level: "strict"  # Options: "basic" or "strict"
+
+  validation_criteria:
+    schema_compliance: true
+    format_integrity: true
+    content_accuracy: true
+    completeness_check: true
+    duplicate_detection: true
+    uniqueness_validation: true
+
+  success_criteria:
+    - "All valid interactions are transformed correctly"
+    - "Output file contains properly formatted JSON objects, one per line"
+    - "Extracted content remains unchanged and accurately structured"
+    - "No critical errors, missing data, or formatting inconsistencies"
+    - "File is ready for immediate use in chatbot model training or evaluation"
